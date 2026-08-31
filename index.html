@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق رفقة - النسخة المتكاملة النهائية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c5e43;
+            --secondary: #3a7d5c;
+            --bg: #fdfbf7;
+            --card: #ffffff;
+            --text: #2b2d42;
+            --gray: #6c757d;
+            --accent: #d4a373;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; border-radius: 0 0 22px 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        header h1 { font-family: 'Amiri', serif; font-size: 2rem; margin-bottom: 2px; }
+        header p { font-size: 0.9rem; opacity: 0.9; }
+        
+        .container { max-width: 650px; margin: 15px auto; padding: 0 15px; width: 100%; flex: 1; }
+        
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .card { background: var(--card); padding: 22px 15px; border-radius: 18px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(44,94,67,0.1); }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 3px; color: var(--primary); }
+        .card p { font-size: 0.78rem; color: var(--gray); }
+
+        .box { background: var(--card); padding: 20px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 15px; border: 1px solid rgba(44,94,67,0.05); }
+        .back-btn { background: none; border: none; color: var(--primary); font-size: 1.05rem; font-weight: bold; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        
+        .surah-list { max-height: 450px; overflow-y: auto; padding-left: 5px; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 12px; border-bottom: 1px solid #f0ede6; cursor: pointer; transition: background 0.2s; border-radius: 8px; }
+        .list-item:hover { background: #f7f5ef; }
+        .list-item h4 { font-family: 'Amiri', serif; color: var(--primary); font-size: 1.25rem; }
+        .list-item span { font-size: 0.85rem; color: var(--gray); }
+
+        .dhikr-categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .dhikr-cat-card { padding: 25px 15px; border-radius: 16px; color: white; text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); transition: transform 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .dhikr-cat-card:hover { transform: scale(1.02); }
+        .dhikr-cat-card i { font-size: 2.2rem; margin-bottom: 8px; }
+        .dhikr-cat-card h3 { font-family: 'Amiri', serif; font-size: 1.2rem; font-weight: bold; }
+
+        .dhikr-reader-box { background: var(--card); padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
+        .progress-bar-container { background: #e0e0e0; height: 6px; border-radius: 3px; margin-bottom: 15px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary); height: 100%; width: 0%; transition: width 0.3s; }
+        .dhikr-counter-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: bold; color: var(--gray); }
+        .dhikr-main-text { font-family: 'Amiri', serif; font-size: 1.4rem; line-height: 2.2; text-align: justify; margin-bottom: 20px; color: #1a1a1a; }
+        .dhikr-virtue { font-size: 0.95rem; color: #2e6930; line-height: 1.6; margin-bottom: 25px; background: #f2f7f2; padding: 12px; border-radius: 10px; border-right: 4px solid var(--primary); }
+        .dhikr-footer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .dhikr-repeat-label { font-weight: bold; color: var(--primary); font-size: 1rem; }
+
+        .main-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; text-align: center; }
+        .main-btn:hover { background: var(--secondary); }
+
+        .tasbeeh-options { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
+        .t-opt-btn { background: #f0ede6; border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; white-space: nowrap; color: var(--text); }
+        .t-opt-btn.active { background: var(--primary); color: white; }
+
+        .task-card { background: #faf8f3; padding: 12px 15px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--accent); }
+        .task-card span { font-size: 0.95rem; font-weight: 600; }
+        .task-card input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+
+        .word-select-box { background: #f4f7f5; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: right; }
+        .word-select-box label { font-weight: bold; display: block; margin-bottom: 8px; color: var(--primary); font-size: 0.95rem; }
+        .word-select-box select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-family: 'Cairo', sans-serif; font-size: 0.95rem; background: white; }
+
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -4px 15px rgba(0,0,0,0.06); border-radius: 22px 22px 0 0; z-index: 1000; max-width: 650px; margin: 0 auto; }
+        .nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; transition: color 0.2s; }
+        .nav-btn i { font-size: 1.3rem; margin-bottom: 4px; }
+        .nav-btn.active { color: var(--primary); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>رفقة</h1>
+        <p>رفيقك اليومي للقرآن، الأذكار، وشجرة الطاعات</p>
+    </header>
+
+    <div class="container">
+        <!-- 1. الرئيسية -->
+        <div id="page-home" class="page active">
+            <div class="grid">
+                <div class="card" onclick="goTo('page-quran')">
+                    <i class="fa-solid fa-book-quran"></i>
+                    <h3>المصحف الشريف</h3>
+                    <p>فهرس السور (114 سورة)</p>
+                </div>
+                <div class="card" onclick="goTo('page-dhikr-sections')">
+                    <i class="fa-solid fa-hands-praying"></i>
+                    <h3>حصن المسلم والأذكار</h3>
+                    <p>أذكار الصباح، المساء، والمزيد</p>
+                </div>
+                <div class="card" onclick="goTo('page-tasbeeh')">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <h3>المسبحة الإلكترونية</h3>
+                    <p>أذكار متعددة وعداد مرن</p>
+                </div>
+                <div class="card" onclick="goTo('page-tree')">
+                    <i class="fa-solid fa-seedling"></i>
+                    <h3>شجرة الطاعات</h3>
+                    <p>مهام اليوم ووردك للارتقاء للمستوى التالي</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. أقسام الأذكار -->
+        <div id="page-dhikr-sections" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <h2 style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 15px; font-size: 1.5rem; text-align: center;">الأذكار والأدعية</h2>
+            
+            <div class="dhikr-categories-grid">
+                <div class="dhikr-cat-card" style="background: linear-gradient(135deg, #1b4d3e, #2c5e43);" onclick="openDhikrCategory('morning')">
+                    <i class="fa-solid fa-sun"></i>
+                    <h3>أذكار الصباح</h3>
+                </div>
+                <div class="dhikr-cat-card" style="background: linear-gradient(135deg, #281b4d, #44327a);" onclick="openDhikrCategory('evening')">
+                    <i class="fa-solid fa-moon"></i>
+                    <h3>أذكار المساء</h3>
+                </div>
+                <div class="dhikr-cat-card" style="background: linear-gradient(135deg, #5c1b4d, #823870);" onclick="openDhikrCategory('sleep')">
+                    <i class="fa-solid fa-bed"></i>
+                    <h3>أذكار النوم</h3>
+                </div>
+                <div class="dhikr-cat-card" style="background: linear-gradient(135deg, #1b4d21, #36823c);" onclick="openDhikrCategory('prayer')">
+                    <i class="fa-solid fa-person-praying"></i>
+                    <h3>بعد الصلاة</h3>
+                </div>
+                <div class="dhikr-cat-card" style="background: linear-gradient(135deg, #1b404d, #2d6f85);" onclick="openDhikrCategory('wake')">
+                    <i class="fa-solid fa-bell"></i>
+                    <h3>الاستيقاظ</h3>
+                </div>
+                <div class="dhikr-cat-card" style="background: linear-gradient(135deg, #82501b, #b3732d);" onclick="openDhikrCategory('mosque')">
+                    <i class="fa-solid fa-mosque"></i>
+                    <h3>أذكار المسجد</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. شاشة قراءة الذكر التفاعلية -->
+        <div id="page-dhikr-player" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <button class="back-btn" style="margin-bottom:0;" onclick="goTo('page-dhikr-sections')"><i class="fa-solid fa-arrow-right"></i> الأقسام</button>
+                <h3 id="dhikr-section-title" style="font-family: 'Amiri', serif; color: var(--primary); font-size: 1.3rem;">أذكار الصباح</h3>
+            </div>
+            
+            <div class="dhikr-reader-box">
+                <div class="dhikr-counter-top">
+                    <span id="dhikr-progress-text">30/1</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="dhikr-progress-bar"></div>
+                </div>
+
+                <div class="dhikr-main-text" id="dhikr-text-content">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ...</div>
+                <div class="dhikr-virtue" id="dhikr-virtue-content">آية الكرسي - سورة البقرة. من قالها حين يصبح أجير من الجن حتى يمسى...</div>
+
+                <div class="dhikr-footer-row">
+                    <button style="background:none; border:none; color:var(--primary); font-size: 1.3rem; cursor:pointer;" onclick="shareDhikr()"><i class="fa-solid fa-share-nodes"></i></button>
+                    <span class="dhikr-repeat-label" id="dhikr-repeat-content">مرة واحدة</span>
+                </div>
+
+                <button class="main-btn" style="margin-top: 20px;" onclick="nextDhikr()" id="dhikr-next-btn">التالي</button>
+            </div>
+        </div>
+
+        <!-- 4. المصحف -->
+        <div id="page-quran" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="box">
+                <h3 style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 12px; font-size: 1.3rem;">فهرس المصحف الشريف (الـ 114 سورة)</h3>
+                <div class="surah-list" id="surahListContainer"></div>
+            </div>
+        </div>
+
+        <!-- شاشة قراءة السورة -->
+        <div id="page-reader" class="page">
+            <button class="back-btn" onclick="goTo('page-quran')"><i class="fa-solid fa-arrow-right"></i> الفهرس</button>
+            <div class="box">
+                <h2 id="r-title" style="text-align: center; font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 15px; font-size: 1.8rem;"></h2>
+                <p id="r-text" style="font-family: 'Amiri', serif; font-size: 1.35rem; line-height: 2.3; text-align: justify; white-space: pre-line;"></p>
+            </div>
+        </div>
+
+        <!-- 5. المسبحة الإلكترونية -->
+        <div id="page-tasbeeh" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="box" style="text-align: center;">
+                <div class="tasbeeh-options" id="tasbeehOptions">
+                    <button class="t-opt-btn active" onclick="setTasbeehType(0)">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</button>
+                    <button class="t-opt-btn" onclick="setTasbeehType(1)">أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ</button>
+                    <button class="t-opt-btn" onclick="setTasbeehType(2)">لَا إِلَهَ إِلَّا اللَّهُ</button>
+                    <button class="t-opt-btn" onclick="setTasbeehType(3)">الْحَمْدُ لِلَّهِ</button>
+                </div>
+                <h3 id="t-title" style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 10px; font-size: 1.4rem;">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</h3>
+                <div id="t-num" style="font-size: 4.5rem; font-weight: bold; color: var(--primary); margin: 15px 0;">0</div>
+                <button class="main-btn" onclick="addTasbeeh()">تسبيح</button>
+                <button onclick="resetTasbeeh()" style="background: none; border: none; color: #dc3545; margin-top: 20px; cursor: pointer; font-weight: bold; font-size: 0.95rem;">تصفير العداد</button>
+            </div>
+        </div>
+
+        <!-- 6. شجرة الطاعات -->
+        <div id="page-tree" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="box" style="text-align: center;">
+                <i id="tree-icon" class="fa-solid fa-seedling" style="font-size: 4.5rem; color: var(--primary); margin-bottom: 10px; transition: 0.3s;"></i>
+                <h3 id="tree-name" style="font-family: 'Amiri', serif; color: var(--primary); font-size: 1.4rem;">البذرة الطيبة</h3>
+                <p id="tree-desc" style="color: var(--gray); margin: 5px 0 12px 0; font-size: 0.9rem;">أنجز مهامك ووردك اليومي لتنتقل للمستوى التالي!</p>
+                <p style="color: var(--text); margin-bottom: 15px; font-weight: bold;">نقاطك الحالية: <span id="p-num" style="color: var(--primary); font-size: 1.2rem;">20</span> نقطة</p>
+            </div>
+
+            <div class="box">
+                <h3 style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 10px; font-size: 1.2rem;"><i class="fa-solid fa-book-open"></i> حدد وردك اليومي للقرآن</h3>
+                <div class="word-select-box">
+                    <label for="dailyWordSelect">اختر مقدار وردك اليوم:</label>
+                    <select id="dailyWordSelect" onchange="saveWordSelection()">
+                        <option value="صفحة واحدة">صفحة واحدة</option>
+                        <option value="صفحتان">صفحتان</option>
+                        <option value="ربع حزب">ربع حزب</option>
+                        <option value="حزب كامل">حزب كامل</option>
+                        <option value="سورة قصيرة">سورة قصيرة (الملك أو الواقعة مثلاً)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="box">
+                <h3 style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;"><i class="fa-solid fa-list-check"></i> مهام اليوم للـ Level Up 🚀</h3>
+                
+                <div class="task-card">
+                    <span>إتمام ورد القرآن الكريم</span>
+                    <input type="checkbox" id="task1" onchange="checkTask(1, 15)">
+                </div>
+                <div class="task-card">
+                    <span>أذكار الصباح والمساء</span>
+                    <input type="checkbox" id="task2" onchange="checkTask(2, 10)">
+                </div>
+                <div class="task-card">
+                    <span>مذاكرة مركزة (مادة علمية أو برمجة)</span>
+                    <input type="checkbox" id="task3" onchange="checkTask(3, 20)">
+                </div>
+                <div class="task-card">
+                    <span>إنجاز مهمة دراسية أو مشروع معلق</span>
+                    <input type="checkbox" id="task4" onchange="checkTask(4, 20)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <button class="nav-btn active" onclick="goTo('page-home')" id="nav-home">
+            <i class="fa-solid fa-house"></i>
+            <span>الرئيسية</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('page-quran')" id="nav-quran">
+            <i class="fa-solid fa-book-quran"></i>
+            <span>المصحف</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('page-tasbeeh')" id="nav-tasbeeh">
+            <i class="fa-solid fa-circle-dot"></i>
+            <span>المسبحة</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('page-tree')" id="nav-tree">
+            <i class="fa-solid fa-seedling"></i>
+            <span>الشجرة</span>
+        </button>
+    </nav>
+
+    <script>
+        function goTo(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+            if(id === 'page-home') document.getElementById('nav-home').classList.add('active');
+            if(id === 'page-quran' || id === 'page-reader') document.getElementById('nav-quran').classList.add('active');
+            if(id === 'page-tasbeeh') document.getElementById('nav-tasbeeh').classList.add('active');
+            if(id === 'page-tree') document.getElementById('nav-tree').classList.add('active');
+
+            window.scrollTo(0, 0);
+        }
+
+        // المصحف والسور الـ 114
+        const surahsData = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "حديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق",
