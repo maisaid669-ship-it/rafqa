@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفقة 🌙</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogItix2YHZgZluIDHYnCIsCiAgInNob3J0X25hbWUiOiAi2LEn2YHZgtitIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmOGY5ZmEiLAogICJ0aGVtZV9jb2xvcpassiNmMkIzODUiCn0=">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2b5b84;
+            --primary-light: #eef4f8;
+            --accent: #d4af37;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --success: #38a169;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 80px;
+            user-select: none;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #1a365d);
+            color: white;
+            padding: 24px 20px 30px;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Plant Progress Card */
+        .plant-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .plant-icon {
+            font-size: 3.5rem;
+            color: var(--success);
+            margin: 10px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .progress-bar-bg {
+            background: #edf2f7;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 12px 0 8px;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--success), #48bb78);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Lists & Items */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 20px 0 12px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .habit-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+        }
+
+        .habit-card.done {
+            background: var(--primary-light);
+            opacity: 0.85;
+        }
+
+        .habit-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .habit-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #f7fafc;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .habit-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .habit-sub {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .check-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e0;
+            background: transparent;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .habit-card.done .check-btn {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        /* Athkar Counter */
+        .thikr-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            text-align: center;
+        }
+
+        .thikr-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .counter-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .counter-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 14px;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .nav-item {
+            border: none;
+            background: none;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 25%;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>رفقة 🌙</h1>
+        <p>رفيقك اليومي لطاعات يدوم أثرها</p>
+    </header>
+
+    <div class="container">
+        <!-- TAB 1: HOME -->
+        <div id="tab-home" class="tab-content active">
+            <div class="plant-card">
+                <div class="plant-icon" id="plantIcon"><i class="fa-solid fa-seedling"></i></div>
+                <h3 id="plantStatus">شجرتك تنمو بالتزامك!</h3>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+                <p id="progressText" style="font-size: 0.85rem; color: var(--text-light);">0% من مهام اليوم</p>
+            </div>
+
+            <div class="section-title">
+                <i class="fa-solid fa-list-check"></i>
+                مهام اليوم
+            </div>
+
+            <div class="habit-card" onclick="toggleHabit(this, 'quran')">
+                <div class="habit-info">
+                    <div class="habit-icon"><i class="fa-solid fa-book-quran"></i></div>
+                    <div>
+                        <div class="habit-title">ورْد القرآن الكريم</div>
+                        <div class="habit-sub">قراءة وردك اليومي</div>
+                    </div>
+                </div>
+                <button class="check-btn"><i class="fa-solid fa-check"></i></button>
+            </div>
+
+            <div class="habit-card" onclick="toggleHabit(this, 'athkar_m')">
+                <div class="habit-info">
+                    <div class="habit-icon"><i class="fa-solid fa-sun"></i></div>
+                    <div>
+                        <div class="habit-title">أذكار الصباح</div>
+                        <div class="habit-sub">حفظك ونورك في يومك</div>
+                    </div>
+                </div>
+                <button class="check-btn"><i class="fa-solid fa-check"></i></button>
+            </div>
+
+            <div class="habit-card" onclick="toggleHabit(this, 'athkar_e')">
+                <div class="habit-info">
+                    <div class="habit-icon"><i class="fa-solid fa-moon"></i></div>
+                    <div>
+                        <div class="habit-title">أذكار المساء</div>
+                        <div class="habit-sub">طمأنينة ليلك</div>
+                    </div>
+                </div>
+                <button class="check-btn"><i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+
+        <!-- TAB 2: ATHKAR -->
+        <div id="tab-athkar" class="tab-content">
+            <div class="section-title">
+                <i class="fa-solid fa-hands-praying"></i>
+                تسبيح واستغفار
+            </div>
+
+            <div class="thikr-card">
+                <div class="thikr-text">أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ</div>
+                <button class="counter-btn" onclick="countUp(this, 33)">0 / 33</button>
+            </div>
+
+            <div class="thikr-card">
+                <div class="thikr-text">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ</div>
+                <button class="counter-btn" onclick="countUp(this, 33)">0 / 33</button>
+            </div>
+
+            <div class="thikr-card">
+                <div class="thikr-text">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ</div>
+                <button class="counter-btn" onclick="countUp(this, 10)">0 / 10</button>
+            </div>
+        </div>
+
+        <!-- TAB 3: STATS -->
+        <div id="tab-stats" class="tab-content">
+            <div class="section-title">
+                <i class="fa-solid fa-chart-line"></i>
+                إحصائياتك
+            </div>
+            <div class="plant-card">
+                <h3>إجمالي الأيام المكتملة</h3>
+                <h1 style="font-size: 3rem; color: var(--primary); margin: 10px 0;" id="streakCount">0</h1>
+                <p style="color: var(--text-light); font-size: 0.9rem;">استمري، أحب الأعمال إلى الله أدومها وإن قل!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home', this)">
+            <i class="fa-solid fa-house"></i>
+            الرئيسية
+        </button>
+        <button class="nav-item" onclick="switchTab('athkar', this)">
+            <i class="fa-solid fa-beads"></i>
+            الأذكار
+        </button>
+        <button class="nav-item" onclick="switchTab('stats', this)">
+            <i class="fa-solid fa-chart-pie"></i>
+            الإحصائيات
+        </button>
+    </nav>
+
+    <script>
+        let state = JSON.parse(localStorage.getItem('rafqa_data')) || {
+            quran: false,
+            athkar_m: false,
+            athkar_e: false,
+            streak: 0
+        };
+
+        function saveState() {
+            localStorage.setItem('rafqa_data', JSON.stringify(state));
+            updateProgress();
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function toggleHabit(card, key) {
+            state[key] = !state[key];
+            if (state[key]) {
+                card.classList.add('done');
+            } else {
+                card.classList.remove('done');
+            }
+            saveState();
+        }
+
+        function updateProgress() {
+            const total = 3;
+            let done = 0;
+            if (state.quran) done++;
+            if (state.athkar_m) done++;
+            if (state.athkar_e) done++;
+
+            const pct = Math.round((done / total) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').innerText = pct + '% من مهام اليوم';
+
+            const icon = document.getElementById('plantIcon');
+            const status = document.getElementById('plantStatus');
+
+            if (pct === 0) {
+                icon.innerHTML = '<i class="fa-solid fa-seedling"></i>';
+                status.innerText = 'ابدأي يومك بطاعة!';
+            } else if (pct < 100) {
+                icon.innerHTML = '<i class="fa-solid fa-plant-wilt" style="color:#ecc94b"></i>';
+                status.innerText = 'شجرتك تنمو وتكبر!';
+            } else {
+                icon.innerHTML = '<i class="fa-solid fa-tree" style="color:#38a169"></i>';
+                status.innerText = 'ما شاء الله! ا اكتملت شجرتك اليوم 🌟';
+            }
+        }
+
+        function countUp(btn, max) {
+            let current = parseInt(btn.innerText.split('/')[0].trim());
+            if (current < max) {
+                current++;
+                btn.innerText = `${current} / ${max}`;
+                if (current === max) {
+                    btn.style.background = '#38a169';
+                    btn.style.color = 'white';
+                }
+            }
+        }
+
+        // Init State on Load
+        window.onload = function() {
+            updateProgress();
+        };
+    </script>
+</body>
+                  </html>
+                  
