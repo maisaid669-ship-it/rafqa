@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق رفقة - Refqa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c5e43;
+            --bg: #fdfbf7;
+            --card: #ffffff;
+            --text: #2b2d42;
+            --gray: #6c757d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 80px; min-height: 100vh; display: flex; flex-direction: column; }
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; }
+        header h1 { font-family: 'Amiri', serif; font-size: 2rem; }
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; width: 100%; flex: 1; }
+        
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; }
+        .card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .card p { font-size: 0.8rem; color: var(--gray); }
+
+        .box { background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .back-btn { background: none; border: none; color: var(--primary); font-size: 1rem; font-weight: bold; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
+        
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .list-item h4 { font-family: 'Amiri', serif; color: var(--primary); font-size: 1.2rem; }
+
+        .main-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 15px; }
+
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 1000; }
+        .nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; }
+        .nav-btn i { font-size: 1.2rem; margin-bottom: 3px; }
+        .nav-btn.active { color: var(--primary); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>رفقة</h1>
+        <p>رفيقك اليومي للقرآن، الأذكار، والطاعات</p>
+    </header>
+
+    <div class="container">
+        <div id="page-home" class="page active">
+            <div class="grid">
+                <div class="card" onclick="goTo('page-quran')">
+                    <i class="fa-solid fa-book-quran"></i>
+                    <h3>المصحف الشريف</h3>
+                    <p>فهرس السور والقراءة</p>
+                </div>
+                <div class="card" onclick="goTo('page-dhikr')">
+                    <i class="fa-solid fa-hands-praying"></i>
+                    <h3>الأذكار اليومية</h3>
+                    <p>أذكار الصباح والمساء</p>
+                </div>
+                <div class="card" onclick="goTo('page-tasbeeh')">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <h3>المسبحة الإلكترونية</h3>
+                    <p>سبح واستغفر بيسر</p>
+                </div>
+                <div class="card" onclick="goTo('page-tree')">
+                    <i class="fa-solid fa-seedling"></i>
+                    <h3>شجرة الطاعات</h3>
+                    <p>راقب نمو حسناتك</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-quran" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="box">
+                <h3 style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 10px;">فهرس السور</h3>
+                <div class="list-item" onclick="openSurah('سورة الفاتحة', 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ. الرَّحْمَٰنِ الرَّحِيمِ. مَالِكِ يَوْمِ الدِّينِ. إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ. اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ. صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ')">
+                    <h4>سورة الفاتحة</h4>
+                    <i class="fa-solid fa-chevron-left" style="color: var(--primary);"></i>
+                </div>
+                <div class="list-item" onclick="openSurah('سورة الإخلاص', 'قُلْ هُوَ اللَّهُ أَحَدٌ. اللَّهُ الصَّمَدُ. لَمْ يَلِدْ وَلَمْ يُولَدْ. وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ')">
+                    <h4>سورة الإخلاص</h4>
+                    <i class="fa-solid fa-chevron-left" style="color: var(--primary);"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-reader" class="page">
+            <button class="back-btn" onclick="goTo('page-quran')"><i class="fa-solid fa-arrow-right"></i> الفهرس</button>
+            <div class="box">
+                <h2 id="r-title" style="text-align: center; font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 15px;"></h2>
+                <p id="r-text" style="font-family: 'Amiri', serif; font-size: 1.3rem; line-height: 2.2; text-align: justify;"></p>
+            </div>
+        </div>
+
+        <div id="page-dhikr" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="box">
+                <h3 style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 15px;">أذكار الصباح والمساء</h3>
+                <div style="background: #faf8f5; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-right: 4px solid var(--primary); font-family: 'Amiri', serif; font-size: 1.1rem; line-height: 1.8;">
+                    أصبحنا وأصبح الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له.
+                </div>
+                <div style="background: #faf8f5; padding: 15px; border-radius: 10px; border-right: 4px solid var(--primary); font-family: 'Amiri', serif; font-size: 1.1rem; line-height: 1.8;">
+                    سُبْحَانَ اللهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ وَرِضَا نَفْسِهِ.
+                </div>
+            </div>
+        </div>
+
+        <div id="page-tasbeeh" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="box" style="text-align: center;">
+                <h3 style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 10px;">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</h3>
+                <div id="t-num" style="font-size: 4rem; font-weight: bold; color: var(--primary); margin: 15px 0;">0</div>
+                <button class="main-btn" onclick="addTasbeeh()">تسبيح</button>
+                <button onclick="resetTasbeeh()" style="background: none; border: none; color: #dc3545; margin-top: 15px; cursor: pointer; font-weight: bold;">تصفير</button>
+            </div>
+        </div>
+
+        <div id="page-tree" class="page">
+            <button class="back-btn" onclick="goTo('page-home')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="box" style="text-align: center;">
+                <i id="tree-icon" class="fa-solid fa-seedling" style="font-size: 4.5rem; color: var(--primary); margin-bottom: 10px;"></i>
+                <h3 id="tree-name" style="font-family: 'Amiri', serif; color: var(--primary);">البذرة الطيبة</h3>
+                <p style="color: var(--gray); margin: 10px 0;">النقاط: <span id="p-num" style="font-weight: bold; color: var(--primary);">20</span></p>
+                <button class="main-btn" onclick="addPoint()">تسجيل ورد اليوم (+10 نقاط)</button>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <button class="nav-btn active" onclick="goTo('page-home')" id="nav-home">
+            <i class="fa-solid fa-house"></i>
+            <span>الرئيسية</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('page-quran')" id="nav-quran">
+            <i class="fa-solid fa-book-quran"></i>
+            <span>المصحف</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('page-tasbeeh')" id="nav-tasbeeh">
+            <i class="fa-solid fa-circle-dot"></i>
+            <span>المسبحة</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('page-tree')" id="nav-tree">
+            <i class="fa-solid fa-seedling"></i>
+            <span>الشجرة</span>
+        </button>
+    </nav>
+
+    <script>
+        function goTo(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+            if(id === 'page-home') document.getElementById('nav-home').classList.add('active');
+            if(id === 'page-quran' || id === 'page-reader') document.getElementById('nav-quran').classList.add('active');
+            if(id === 'page-tasbeeh') document.getElementById('nav-tasbeeh').classList.add('active');
+            if(id === 'page-tree') document.getElementById('nav-tree').classList.add('active');
+
+            window.scrollTo(0, 0);
+        }
+
+        function openSurah(title, text) {
+            document.getElementById('r-title').innerText = title;
+            document.getElementById('r-text').innerText = text;
+            goTo('page-reader');
+        }
+
+        let t = parseInt(localStorage.getItem('t_val')) || 0;
+        document.getElementById('t-num').innerText = t;
+        function addTasbeeh() {
+            t++;
+            localStorage.setItem('t_val', t);
+            document.getElementById('t-num').innerText = t;
+        }
+        function resetTasbeeh() {
+            t = 0;
+            localStorage.setItem('t_val', t);
+            document.getElementById('t-num').innerText = t;
+        }
+
+        let p = parseInt(localStorage.(localStorage.getItem('p_val'))) || 20; // fallback handled below
+        let pVal = parseInt(localStorage.getItem('p_val')) || 20;
+        function updateTreeUI() {
+            document.getElementById('p-num').innerText = pVal;
+            let icon = document.getElementById('tree-icon');
+            let name = document.getElementById('tree-name');
+            if(pVal < 50) {
+                icon.className = "fa-solid fa-seedling";
+                name.innerText = "البذرة الطيبة";
+            } else if(pVal < 150) {
+                icon.className = "fa-solid fa-spa";
+                name.innerText = "النبتة الناشئة";
+            } else {
+                icon.className = "fa-solid fa-tree";
+                name.innerText = "الشجرة المثمرة";
+            }
+        }
+        function addPoint() {
+            pVal += 10;
+            localStorage.setItem('p_val', pVal);
+            updateTreeUI();
+            alert('تم تسجيل الورد بنجاح 🌿!');
+        }
+        updateTreeUI();
+    </script>
+</body>
+          </html>
+          
