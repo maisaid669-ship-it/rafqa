@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفقة - رحلتك مع القرآن والذكر</title>
+    <style>
+        :root {
+            --primary-color: #1e5631;
+            --secondary-color: #4c9a2a;
+            --bg-color: #f4f7f4;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --gray-text: #666666;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 15px;
+            padding-bottom: 70px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .motivation-card {
+            background: linear-gradient(135deg, #e8f5e9, #d0f0c0);
+            border-right: 5px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .motivation-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #1b4d2e;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-info h3 {
+            margin: 0 0 5px;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .card-info p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--gray-text);
+        }
+
+        .card-icon {
+            font-size: 24px;
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .tree-card {
+            background: linear-gradient(135deg, #1e5631, #4c9a2a);
+            color: white;
+        }
+
+        .tree-card h3, .tree-card p {
+            color: white;
+        }
+
+        .tree-card .card-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-text);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="header-title">رِفقة</h1>
+    </header>
+
+    <div class="container">
+
+        <div id="home-view" class="view active">
+            <div class="motivation-card">
+                <p>💡 "خطوة صغيرة كل يوم.. أقرب بكتير من التوقف تمامًا. رِفقة معاك في كل خطوة."</p>
+            </div>
+
+            <div class="card tree-card" onclick="switchView('tree-view', 'شجرتك')">
+                <div class="card-info">
+                    <h3>شجرتك (مرحلة النمو)</h3>
+                    <p>تتطور بهدوء مع استمرارك.. اطمئن، الأيام اللي فاتت ما بتروحش.</p>
+                </div>
+                <div class="card-icon">🌱</div>
+            </div>
+
+            <div class="card" onclick="switchView('quran-index-view', 'فهرس المصحف الشريف')">
+                <div class="card-info">
+                    <h3>ورد القرآن</h3>
+                    <p>فهرس السور (114 سورة) للتلاوة اليومية</p>
+                </div>
+                <div class="card-icon">📖</div>
+            </div>
+
+            <div class="card" onclick="switchView('azkar-main-view', 'حصن المسلم والأذكار')">
+                <div class="card-info">
+                    <h3>أذكار الصباح والمساء</h3>
+                    <p>حصنك اليومي للبداية والنهاية الهادئة</p>
+                </div>
+                <div class="card-icon">🤲</div>
+            </div>
+
+            <div class="card" onclick="switchView('weekly-view', 'حصيلة الأسبوع')">
+                <div class="card-info">
+                    <h3>حصيلة الأسبوع</h3>
+                    <p>راقب أثر خطواتك الجميلة وتعرف على أيام إقبالك.</p>
+                </div>
+                <div class="card-icon">📊</div>
+            </div>
+
+            <div class="card" onclick="switchView('monthly-view', 'حصيلة الشهر')">
+                <div class="card-info">
+                    <h3>حصيلة الشهر</h3>
+                    <p>مسيرة شهر كامل من النور والالتزام الهادئ.</p>
+                </div>
+                <div class="card-icon">📅</div>
+            </div>
+
+            <div class="card" onclick="switchView('achievements-view', 'إنجازات رِفقة')">
+                <div class="card-info">
+                    <h3>إنجازات رِفقة</h3>
+                    <p>أوسمة الثبات والاستمرار.. بدون ضغط النقاط.</p>
+                </div>
+                <div class="card-icon">🏆</div>
+            </div>
+
+            <div class="card" onclick="switchView('missed-day-view', 'يوم فاتك؟')">
+                <div class="card-info">
+                    <h3>يوم فاتك؟ لا تقلق أبدًا</h3>
+                    <p>العودة الجميلة تبدأ الآن.. رِفقة ينتظر عودتك بحب.</p>
+                </div>
+                <div class="card-icon">🌿</div>
+            </div>
+        </div>
+
+        <div id="tree-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view', 'رِفقة')">⬅ العودة للرئيسية</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">مراحل نمو الشجرة</h2>
+            <div class="motivation-card">
+                <p>🌱 مراحل رِفقة: البداية → النمو → الثبات → الإثمار → الرفقة.</p>
+            </div>
+        </div>
+
+        <div id="quran-index-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view', 'رِفقة')">⬅ العودة للرئيسية</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">فهرس المصحف الشريف (114 سورة)</h2>
+            
+            <div class="card"><div class="card-info"><h3>1. سورة الفاتحة</h3><p>مكية • 7 آيات</p></div><span class="badge">صفحة 1</span></div>
+            <div class="card"><div class="card-info"><h3>2. سورة البقرة</h3><p>مدنية • 286 آية</p></div><span class="badge">صفحة 2</span></div>
+            <div class="card"><div class="card-info"><h3>3. سورة آل عمران</h3><p>مدنية • 200 آية</p></div><span class="badge">صفحة 50</span></div>
+            <div class="card"><div class="card-info"><h3>4. سورة النساء</h3><p>مدنية • 176 آية</p></div><span class="badge">صفحة 77</span></div>
+            <div class="card"><div class="card-info"><h3>5. سورة المائدة</h3><p>مدنية • 120 آية</p></div><span class="badge">صفحة 106</span></div>
+            <div class="card"><div class="card-info"><h3>6. سورة الأنعام</h3><p>مكية • 165 آية</p></div><span class="badge">صفحة 128</span></div>
+            <div class="card"><div class="card-info"><h3>7. سورة الأعراف</h3><p>مكية • 206 آية</p></div><span class="badge">صفحة 151</span></div>
+            <div class="card"><div class="card-info"><h3>8. سورة الأنفال</h3><p>مدنية • 75 آية</p></div><span class="badge">صفحة 177</span></div>
+            <div class="card"><div class="card-info"><h3>9. سورة التوبة</h3><p>مدنية • 129 آية</p></div><span class="badge">صفحة 187</span></div>
+            <div class="card"><div class="card-info"><h3>10. سورة يونس</h3><p>مكية • 109 آية</p></div><span class="badge">صفحة 208</span></div>
+            <p style="text-align: center; color: var(--gray-text); font-size: 13px; margin-top: 15px;">... (باقي السور من 11 لـ 114 مرتبة في المصحف) ...</p>
+        </div>
+
+        <div id="azkar-main-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view', 'رِفقة')">⬅ العودة للرئيسية</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">حصن المسلم والأذكار</h2>
+
+            <div class="card" onclick="switchView('sabah-view', 'أذكار الصباح')">
+                <div class="card-info">
+                    <h3>أذكار الصباح</h3>
+                    <p>ابدأ يومك بالحصن والأمان</p>
+                </div>
+                <div class="card-icon">☀️</div>
+            </div>
+
+            <div class="card" onclick="switchView('masa-view', 'أذكار المساء')">
+                <div class="card-info">
+                    <h3>أذكار المساء</h3>
+                    <p>اختم يومك بالسكينة والاطمئنان</p>
+                </div>
+                <div class="card-icon">🌙</div>
+            </div>
+        </div>
+
+        <div id="sabah-view" class="view">
+            <button class="back-btn" onclick="switchView('azkar-main-view', 'حصن المسلم والأذكار')">⬅ العودة للأذكار</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">أذكار الصباح</h2>
+
+            <div class="card"><div class="card-info"><h3>آية الكرسي</h3><p>اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...</p><span class="badge">تكرر مرّة واحدة</span></div></div>
+            <div class="card"><div class="card-info"><h3>سورة الإخلاص والمعوذتين</h3><p>قُلْ هُوَ اللَّهُ أَحَدٌ... وقل أعوذ برب الفلق... وقل أعوذ برب الناس</p><span class="badge">تكرر 3 مرات</span></div></div>
+            <div class="card"><div class="card-info"><h3>سيد الاستغفار</h3><p>اللَّهُمَّ أَنْتَ رَبِّي لا إله إلا أنت، خلقتني وأنا عبدك...</p><span class="badge">تكرر مرّة واحدة</span></div></div>
+            <div class="card"><div class="card-info"><h3>أذكار اليقين</h3><p>رضيت بالله رباً، وبالإسلام ديناً، وبمحمد صلى الله عليه وسلم نبياً.</p><span class="badge">تكرر 3 مرات</span></div></div>
+        </div>
+
+        <div id="masa-view" class="view">
+            <button class="back-btn" onclick="switchView('azkar-main-view', 'حصن المسلم والأذكار')">⬅ العودة للأذكار</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">أذكار المساء</h2>
+
+            <div class="card"><div class="card-info"><h3>آية الكرسي</h3><p>اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...</p><span class="badge">تكرر مرّة واحدة</span></div></div>
+            <div class="card"><div class="card-info"><h3>خواتيم سورة البقرة</h3><p>آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ...</p><span class="badge">تكرر مرّة واحدة</span></div></div>
+            <div class="card"><div class="card-info"><h3>سورة الإخلاص والمعوذتين</h3><p>قُلْ هُوَ اللَّهُ أَحَدٌ... والمعوذتين</p><span class="badge">تكرر 3 مرات</span></div></div>
+        </div>
+
+        <div id="weekly-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view', 'رِفقة')">⬅ العودة للرئيسية</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">حصيلة الأسبوع</h2>
+            <div class="motivation-card"><p>📊 عرض الأيام التي التزمت فيها والأيام التي فاتتك بكل مرونة وبدون إحساس بالذنب.</p></div>
+        </div>
+
+        <div id="monthly-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view', 'رِفقة')">⬅ العودة للرئيسية</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">حصيلة الشهر</h2>
+            <div class="motivation-card"><p>📅 مقارنة لطيفة بين الشهر الحالي والشهر السابق لملاحظة تقدمك واستمرارك.</p></div>
+        </div>
+
+        <div id="achievements-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view', 'رِفقة')">⬅ العودة للرئيسية</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">الإنجازات</h2>
+            <div class="motivation-card"><p>🏆 إنجازات مرتبطة بالاستمرارية والثبات اليومي، وليست بالنقاط أو الـ XP.</p></div>
+        </div>
+
+        <div id="missed-day-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view', 'رِفقة')">⬅ العودة للرئيسية</button>
+            <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">يوم فاتك؟</h2>
+            <div class="motivation-card"><p>🌿 رِفقة يشجعك لترجع من جديد بكل حب، مفيش حاجة اسمها رجعت للصفر، المهم إنك كملت الطريق.</p></div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <a class="nav-item active" onclick="switchView('home-view', 'رِفقة')">🏠 الرئيسية</a>
+        <a class="nav-item" onclick="switchView('quran-index-view', 'فهرس المصحف الشريف')">📖 المصحف</a>
+        <a class="nav-item" onclick="switchView('azkar-main-view', 'حصن المسلم والأذكار')">🤲 الأذكار</a>
+        <a class="nav-item" onclick="switchView('tree-view', 'شجرتك')">🌱 الشجرة</a>
+    </div>
+
+    <script>
+        function switchView(viewId, titleText) {
+            const views = document.querySelectorAll('.view');
+            views.forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.getElementById('header-title').innerText = titleText;
+            window.scrollTo(0, 0);
+        }
+    </script>
+
+</body>
+                  </html>
+                  
