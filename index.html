@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفقة - Refqa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c5e43;
+            --secondary: #d4a373;
+            --accent: #e9edc9;
+            --bg: #fdfbf7;
+            --card-bg: #ffffff;
+            --text: #2b2d42;
+            --text-light: #6c757d;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 15px rgba(44, 94, 67, 0.2);
+            position: relative;
+        }
+
+        header h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 15px;
+            width: 100%;
+            flex: 1;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .menu-card:active {
+            transform: scale(0.97);
+        }
+
+        .menu-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .menu-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+
+        .menu-card p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Quran Styles */
+        .surah-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .surah-item:last-child { border-bottom: none; }
+        .surah-info h4 { font-family: 'Amiri', serif; font-size: 1.2rem; }
+        .surah-info span { font-size: 0.8rem; color: var(--text-light); }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Tasbeeh Styles */
+        .counter-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 30px 0;
+        }
+        .counter-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0 auto;
+            display: block;
+            box-shadow: 0 8px 20px rgba(44, 94, 67, 0.3);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .counter-btn:active { transform: scale(0.95); }
+
+        /* Tree Styles */
+        .tree-container {
+            text-align: center;
+            padding: 20px;
+        }
+        .tree-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>رفقة</h1>
+        <p>رفيقك اليومي للقرآن، الأذكار، والطاعات</p>
+    </header>
+
+    <div class="container">
+        <!-- Home View -->
+        <div id="home-view" class="view active">
+            <div class="grid-menu">
+                <div class="menu-card" onclick="switchView('quran-view')">
+                    <i class="fa-solid fa-book-quran"></i>
+                    <h3>المصحف الشريف</h3>
+                    <p>اقرأ وتدبر آيات الذكر الحكيم</p>
+                </div>
+                <div class="menu-card" onclick="switchView('dhikr-view')">
+                    <i class="fa-solid fa-hands-praying"></i>
+                    <h3>الأذكار اليومية</h3>
+                    <p>حصن مسلمك الصباح والمساء</p>
+                </div>
+                <div class="menu-card" onclick="switchView('tasbeeh-view')">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <h3>المسبحة الإلكترونية</h3>
+                    <p>سبح واستغفر بكل وسرعة</p>
+                </div>
+                <div class="menu-card" onclick="switchView('tree-view')">
+                    <i class="fa-solid fa-seedling"></i>
+                    <h3>شجرة العادات</h3>
+                    <p>تتبع ورد يومك وراقب نموها</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quran View -->
+        <div id="quran-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="card">
+                <h3 style="margin-bottom: 15px; font-family: 'Amiri', serif;">فهرس السور</h3>
+                <div id="surah-list">جاري تحميل السور...</div>
+            </div>
+        </div>
+
+        <!-- Surah Reader View -->
+        <div id="reader-view" class="view">
+            <button class="back-btn" onclick="switchView('quran-view')"><i class="fa-solid fa-arrow-right"></i> الفهرس</button>
+            <div class="card">
+                <h2 id="reader-title" style="text-align: center; font-family: 'Amiri', serif; margin-bottom: 20px; color: var(--primary);"></h2>
+                <div id="reader-content" style="font-family: 'Amiri', serif; font-size: 1.4rem; line-height: 2.2; text-align: justify;">جاري تحميل الآيات...</div>
+            </div>
+        </div>
+
+        <!-- Dhikr View -->
+        <div id="dhikr-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="card">
+                <h3 style="margin-family: 'Amiri', serif; margin-bottom: 10px;">أذكار الصباح</h3>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px;">أصبحنا وأصبح الملك لله...</p>
+                <button class="counter-btn" onclick="alert('تقبل الله طاعتك!')" style="width: 100%; height: 50px; border-radius: 10px; font-size: 1rem;">تم القراءة</button>
+            </div>
+        </div>
+
+        <!-- Tasbeeh View -->
+        <div id="tasbeeh-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="card" style="text-align: center;">
+                <h3 style="font-family: 'Amiri', serif;">سبحان الله وبحمده</h3>
+                <div class="counter-display" id="tasbeeh-count">0</div>
+                <button class="counter-btn" onclick="incrementTasbeeh()">تسبيح</button>
+                <button onclick="resetTasbeeh()" style="background: none; border: none; color: #dc3545; margin-top: 20px; cursor: pointer;"><i class="fa-solid fa-rotate-right"></i> إعادة العداد</button>
+            </div>
+        </div>
+
+        <!-- Tree View -->
+        <div id="tree-view" class="view">
+            <button class="back-btn" onclick="switchView('home-view')"><i class="fa-solid fa-arrow-right"></i> الرئيسية</button>
+            <div class="card tree-container">
+                <i class="fa-solid fa-tree tree-icon"></i>
+                <h3 style="font-family: 'Amiri', serif;">شجرة الطاعات</h3>
+                <p style="color: var(--text-light); margin-top: 10px;">كلما داومت على ذكرك، كلما نمت شجرتك وأثمرت.</p>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <button class="nav-item active" onclick="switchView('home-view')" id="nav-home">
+            <i class="fa-solid fa-house"></i>
+            <span>الرئيسية</span>
+        </button>
+        <button class="nav-item" onclick="switchView('quran-view')" id="nav-quran">
+            <i class="fa-solid fa-book-quran"></i>
+            <span>المصحف</span>
+        </button>
+        <button class="nav-item" onclick="switchView('tasbeeh-view')" id="nav-tasbeeh">
+            <i class="fa-solid fa-circle-dot"></i>
+            <span>المسبحة</span>
+        </button>
+        <button class="nav-item" onclick="switchView('tree-view')" id="nav-tree">
+            <i class="fa-solid fa-seedling"></i>
+            <span>الشجرة</span>
+        </button>
+    </nav>
+
+    <script>
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(viewId === 'home-view') document.getElementById('nav-home').classList.add('active');
+            if(viewId === 'quran-view' || viewId === 'reader-view') document.getElementById('nav-quran').classList.add('active');
+            if(viewId === 'tasbeeh-view') document.getElementById('nav-tasbeeh').classList.add('active');
+            if(viewId === 'tree-view') document.getElementById('nav-tree').classList.add('active');
+
+            window.scrollTo(0, 0);
+
+            if (viewId === 'quran-view') {
+                loadSurahs();
+            }
+        }
+
+        let count = localStorage.getItem('tasbeeh_count') || 0;
+        document.getElementById('tasbeeh-count').innerText = count;
+
+        function incrementTasbeeh() {
+            count++;
+            localStorage.setItem('tasbeeh_count', count);
+            document.getElementById('tasbeeh-count').innerText = count;
+        }
+
+        function resetTasbeeh() {
+            count = 0;
+            localStorage.setItem('tasbeeh_count', count);
+            document.getElementById('tasbeeh-count').innerText = count;
+        }
+
+        async function loadSurahs() {
+            const list = document.getElementById('surah-list');
+            if (list.children.length > 1) return; // Loaded already
+            try {
+                let res = await fetch('https://api.alquran.cloud/v1/surah');
+                let data = await res.json();
+                list.innerHTML = '';
+                data.data.forEach(surah => {
+                    list.innerHTML += `
+                        <div class="surah-item" onclick="loadSurahContent(${surah.number}, '${surah.name}')">
+                            <div class="surah-info">
+                                <h4>${surah.name}</h4>
+                                <span>${surah.englishName} (${surah.numberOfAyahs} آية)</span>
+                            </div>
+                            <span style="color: var(--primary); font-weight: bold;">${surah.number}</span>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                list.innerHTML = '<p style="text-align:center; color:red;">تعذر تحميل السور، تأكد من اتصال الإنترنت.</p>';
+            }
+        }
+
+        async function loadSurahContent(number, name) {
+            switchView('reader-view');
+            document.getElementById('reader-title').innerText = name;
+            const content = document.getElementById('reader-content');
+            content.innerHTML = 'جاري تحميل الآيات...';
+            try {
+                let res = await fetch(`https://api.alquran.cloud/v1/surah/${number}`);
+                let data = await res.json();
+                let ayahsText = '';
+                data.data.ayahs.forEach(ayah => {
+                    ayahsText += `${ayah.text} ﴿${ayah.numberInSurah}﴾ `;
+                });
+                content.innerHTML = ayahsText;
+            } catch (e) {
+                content.innerHTML = '<p style="text-align:center; color:red;">تعذر تحميل الآيات.</p>';
+            }
+        }
+    </script>
+</body>
+  </html>
+  
