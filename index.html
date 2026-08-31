@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رِفقة - المصحف والأذكار</title>
+    <style>
+        :root {
+            --bg-main: #f7f9f6;
+            --card-bg: #ffffff;
+            --accent-green: #2e5a36;
+            --light-green: #eaf2ec;
+            --text-dark: #2c3e35;
+            --text-light: #6c7a72;
+            --gold: #d4af37;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px;
+        }
+
+        .rafqa-header {
+            background: linear-gradient(135deg, #2e5a36, #417b4e);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(46, 90, 54, 0.15);
+        }
+
+        .rafqa-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* كروت الأقسام الرئيسية */
+        .section-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border-right: 5px solid var(--accent-green);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .section-box:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+
+        .section-box h3 {
+            margin: 0 0 5px;
+            color: var(--accent-green);
+        }
+
+        .section-box p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* محرك البحث والفهرس للسور الـ 114 */
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            margin-bottom: 15px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .surah-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .surah-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .surah-item:hover {
+            background: var(--light-green);
+            border-right: 4px solid var(--accent-green);
+        }
+
+        /* أزرار الأذكار المدمجة */
+        .azkar-category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .azkar-btn-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+            cursor: pointer;
+            border: 1px solid #e1e8e2;
+            transition: 0.2s;
+        }
+
+        .azkar-btn-card:hover {
+            background: var(--light-green);
+            border-color: var(--accent-green);
+        }
+
+        .azkar-btn-card span {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--accent-green);
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 12px;
+            padding: 0;
+        }
+
+        /* شريط التنقل السفلي */
+        .rafqa-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .nav-btn div {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .nav-btn.active {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="rafqa-header">
+        <h1 id="header-title">رِفقة ✨</h1>
+    </div>
+
+    <div class="container">
+
+        <!-- 1. الشاشة الرئيسية -->
+        <div id="view-home" class="view-section active">
+            <div class="section-box" onclick="switchTab('view-quran', 'المصحف الشريف (114 سورة)')">
+                <h3>📖 المصحف الشريف</h3>
+                <p>تصفح سور القرآن الكريم كاملاً (من الفاتحة إلى الناس)</p>
+            </div>
+            <div class="section-box" onclick="switchTab('view-azkar', 'حصن الأذكار الشامل')">
+                <h3>📿 حصن الأذكار الشامل</h3>
+                <p>أذكار الصباح، المساء، النوم، الاستيقاظ، وكل الأذكار</p>
+            </div>
+            <div class="section-box" onclick="switchTab('view-duaa', 'الأدعية المأثورة والقرآنية')">
+                <h3>🤲 أدعية ومناجاة</h3>
+                <p>أدعية الأنبياء، جوامع الكلم، والأدعية اليومية</p>
+            </div>
+        </div>
+
+        <!-- 2. شاشة المصحف (فهرس الـ 114 سورة) -->
+        <div id="view-quran" class="view-section">
+            <button class="back-btn" onclick="switchTab('view-home', 'رِفقة ✨')">⬅ عودة للرئيسية</button>
+            <input type="text5" class="search-input" placeholder="ابحث عن اسم السورة..." id="surahSearch" onkeyup="filterSurahs()">
+            <div class="surah-list" id="surahListContainer">
+                <!-- يتم توليد السور برمجياً لتجنب ثقل الكود -->
+            </div>
+        </div>
+
+        <!-- 3. شاشة الأذكار الشاملة -->
+        <div id="view-azkar" class="view-section">
+            <button class="back-btn" onclick="switchTab('view-home', 'رِفقة ✨')">⬅ عودة للرئيسية</button>
+            <div class="azkar-category-grid">
+                <div class="azkar-btn-card" onclick="openAzkarDetail('أذكار الصباح')">
+                    <span>☀️</span>
+                    <strong>أذكار الصباح</strong>
+                </div>
+                <div class="azkar-btn-card" onclick="openAzkarDetail('أذكار المساء')">
+                    <span>🌙</span>
+                    <strong>أذكار المساء</strong>
+                </div>
+                <div class="azkar-btn-card" onclick="openAzkarDetail('أذكار النوم')">
+                    <span>✨</span>
+                    <strong>أذكار النوم</strong>
+                </div>
+                <div class="azkar-btn-card" onclick="openAzkarDetail('أذكار الاستيقاظ')">
+                    <span>🌅</span>
+                    <strong>الاستيقاظ</strong>
+                </div>
+                <div class="azkar-btn-card" onclick="openAzkarDetail('بعد الصلاة')">
+                    <span>🧎‍♀️</span>
+                    <strong>بعد الصلوات</strong>
+                </div>
+                <div class="azkar-btn-card" onclick="openAzkarDetail('أذكار متنوعة')">
+                    <span>📿</span>
+                    <strong>أذكار متفرقة</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. شاشة التفاصيل (عرض الأذكار أو السورة المختارة) -->
+        <div id="view-detail" class="view-section">
+            <button class="back-btn" onclick="switchTab('view-azkar', 'حصن الأذكار الشامل')">⬅ عودة للأذكار</button>
+            <div id="detail-box" style="background: white; padding: 20px; border-radius: 15px; line-height: 2; font-size: 16px;">
+                <!-- المحتوى الديناميكي -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="rafqa-nav">
+        <button class="nav-btn active" onclick="switchTab('view-home', 'رِفقة ✨', this)">
+            <div>🏠</div>الرئيسية
+        </button>
+        <button class="nav-btn" onclick="switchTab('view-quran', 'المصحف الشريف (114 سورة)', this)">
+            <div>📖</div>المصحف
+        </button>
+        <button class="nav-btn" onclick="switchTab('view-azkar', 'حصن الأذكار الشامل', this)">
+            <div>📿</div>الأذكار
+        </button>
+    </div>
+
+    <script>
+        // قائمة نموذجية لبعض السور (يمكن توسيعها لتشمل الـ 114 سورة بكل سهولة برمجياً)
+        const surahs = [
+            "1. سورة الفاتحة", "2. سورة البقرة", "3. سورة آل عمران", "4. سورة النساء", 
+            "5. سورة المائدة", "6. سورة الأنعام", "7. سورة الأعراف", "8. سورة الأنفال", 
+            "9. سورة التوبة", "10. سورة يونس", "11. سورة هود", "12. سورة يوسف",
+            // وباقي الـ 114 سورة تضاف هنا بنفس النمط البرمجي السريع
+            "112. سورة الإخلاص", "113. سورة الفلق", "114. سورة الناس"
+        ];
+
+        function loadSurahs() {
+            const container = document.getElementById('surahListContainer');
+            container.innerHTML = "";
+            surahs.forEach(surah => {
+                const div = document.createElement('div');
+                div.className = 'surah-item';
+                div.innerHTML = `<strong>${surah}</strong><span>تلاوة وتدبر</span>`;
+                div.onclick = () => alert('جاري فتح آيات ' + surah + ' بكل خاشعة...');
+                container.appendChild(div);
+            });
+        }
+        loadSurahs();
+
+        function switchTab(viewId, title, element) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.getElementById('header-title').innerText = title;
+
+            if(element) {
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                element.classList.add('active');
+            }
+            window.scrollTo(0,0);
+        }
+
+        function openAzkarDetail(categoryName) {
+            switchTab('view-detail', categoryName);
+            document.getElementById('detail-box').innerHTML = `
+                <h3 style="color: var(--accent-green); margin-top:0;">${categoryName}</h3>
+                <p>• آية الكرسي: اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...</p>
+                <p>• المعوذايات والإخلاص (تكرر 3 مرات)</p>
+                <p>• "اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك..."</p>
+                <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
+                <span style="color: var(--text-light); font-size: 13px;">حفظك الله ورعاكِ وجعل لسانك عامراً بذكره دائماً ❤️</span>
+            `;
+        }
+
+        function filterSurahs() {
+            let input = document.getElementById('surahSearch').value.toLowerCase();
+            let items = document.querySelectorAll('.surah-item');
+            items.forEach(item => {
+                let text = item.innerText.toLowerCase();
+                item.style.display = text.includes(input) ? "flex" : "none";
+            });
+        }
+    </script>
+
+</body>
+                      </html>
+                      
